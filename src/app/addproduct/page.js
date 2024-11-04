@@ -1,72 +1,70 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import "../style.css";
-export default function Page() {
+
+function Addproduct() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [company, setCompany] = useState("");
   const [color, setColor] = useState("");
   const [category, setCategory] = useState("");
 
-  const addProduct = async () => {
-    console.log(name, price, company, color, category);
+  const addProducts = async () => {
     let result = await fetch("http://localhost:3000/api/products", {
       method: "POST",
       body: JSON.stringify({ name, price, company, color, category }),
     });
     result = await result.json();
     if (result.success) {
-      alert("New product added");
+      alert("new product added");
     }
-
-    setName("");
-    setPrice("");
-    setCompany("");
-    setColor("");
-    setCategory("");
   };
+
   return (
     <div className="client-page">
-      <h1>Add products</h1>
+      <h1>ADD PRODUCT</h1>
+
       <input
-        className="input"
         type="text"
-        placeholder="Enter product  name"
         value={name}
         onChange={(e) => setName(e.target.value)}
+        placeholder="name"
+        className="input"
       />
       <input
-        className="input"
-        type="text"
-        placeholder="Enter product price"
+        type="number"
         value={price}
         onChange={(e) => setPrice(e.target.value)}
+        placeholder="price"
+        className="input"
       />
       <input
-        className="input"
         type="text"
-        placeholder="Enter product  company"
         value={company}
         onChange={(e) => setCompany(e.target.value)}
+        placeholder="company"
+        className="input"
       />
       <input
-        className="input"
         type="text"
-        placeholder="Enter product  color"
         value={color}
         onChange={(e) => setColor(e.target.value)}
+        placeholder="color"
+        className="input"
       />
       <input
-        className="input"
         type="text"
-        placeholder="Enter product category"
         value={category}
         onChange={(e) => setCategory(e.target.value)}
+        placeholder="category"
+        className="input"
       />
-      <button className="btn" onClick={addProduct}>
-        {" "}
-        Add Product
+
+      <button onClick={addProducts} className="btn">
+        add product
       </button>
     </div>
   );
 }
+
+export default Addproduct;

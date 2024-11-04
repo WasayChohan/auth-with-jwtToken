@@ -1,5 +1,6 @@
+import React from "react";
 import "../style.css";
-export default function Page() {
+function ProductList() {
   return (
     <div className="client-page">
       <h1>Product List</h1>
@@ -17,3 +18,5 @@ export default function Page() {
     </div>
   );
 }
+
+export default ProductList;
