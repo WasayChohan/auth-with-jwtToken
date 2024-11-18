@@ -1,9 +1,8 @@
 import Connection from "@/database/config";
 import Product from "@/models/product";
-import { NextRequest, NextResponse } from "next/server";
 import multer from "multer";
-import { Grid } from "gridfs-stream";
-import { MongoClient } from "mongodb";
+
+import { NextRequest, NextResponse } from "next/server";
 
 Connection();
 
@@ -20,14 +19,59 @@ export async function GET() {
   return NextResponse.json({ result: data, success: true });
 }
 
-export async function POST(request) {
-  try {
-    const payload = await request.json();
-    const product = new Product(payload);
-    await product.save();
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
-    return NextResponse.json({ product, success: true });
+// API Route Configuration
+export const config = {
+  api: {
+    bodyParser: false, // Disable Next.js default body parser for file uploads
+  },
+};
+
+export async function POST(req) {
+  try {
+    // Wait for Multer to process the form data
+    const form = upload.single("image"); // Expect a single 'image' file field
+
+    const parsedForm = new Promise((resolve, reject) => {
+      form(req, {}, (err) => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+
+    await parsedForm; // Wait for the form processing to finish
+
+    // Parse the rest of the fields from the form data
+    const { name, price, company, color, category } = req.body;
+    const imageFile = req.file;
+
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Create a new Product document with the image data as a Buffer
+    const newProduct = new Product({
+      name,
+      price,
+      company,
+      color,
+      category,
+      image: {
+        data: imageFile.buffer, // Store the image data as a Buffer
+        contentType: imageFile.mimetype, // Store the MIME type (optional)
+      },
+    });
+
+    // Save the product to MongoDB
+    await newProduct.save();
+
+    return NextResponse.json({ success: true, product: newProduct });
   } catch (error) {
-    console.log(error);
+    console.error("Error saving product:", error);
+    return NextResponse.json({
+      success: false,
+      error: "Failed to save product",
+    });
   }
 }

@@ -8,15 +8,26 @@ function Addproduct() {
   const [company, setCompany] = useState("");
   const [color, setColor] = useState("");
   const [category, setCategory] = useState("");
+  const [image, setImage] = useState(null); // New state for the image file
 
   const addProducts = async () => {
+    // Create FormData to handle file upload
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("price", price);
+    formData.append("company", company);
+    formData.append("color", color);
+    formData.append("category", category);
+    formData.append("image", image); // Append the image file
+
     let result = await fetch("http://localhost:3000/api/products", {
       method: "POST",
-      body: JSON.stringify({ name, price, company, color, category }),
+      body: formData, // Use FormData as the body
     });
+
     result = await result.json();
     if (result.success) {
-      alert("new product added");
+      alert("New product added");
     }
   };
 
@@ -59,9 +70,14 @@ function Addproduct() {
         placeholder="category"
         className="input"
       />
+      <input
+        type="file"
+        onChange={(e) => setImage(e.target.files[0])} // Handle file input
+        className="input"
+      />
 
       <button onClick={addProducts} className="btn">
-        add product
+        Add Product
       </button>
     </div>
   );
