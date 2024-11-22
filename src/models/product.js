@@ -26,8 +26,8 @@ const productSchema = new mongoose.Schema({
   },
 
   image: {
-    data: Buffer,
-    contentType: String, // Optional: can be used to store the image MIME type
+    type: String, // Store the image filename or path
+    required: true,
   },
 });
 

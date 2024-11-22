@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import "../style.css";
 import Link from "next/link";
-import DeleteProduct from "../deleteproduct";
+
 import { useRouter } from "next/navigation";
 
 export default function ProductList() {
@@ -52,6 +52,7 @@ export default function ProductList() {
             <td>Color</td>
             <td>Company</td>
             <td>Category</td>
+            <td>Image</td>
           </tr>
         </thead>
         <tbody>
@@ -62,6 +63,22 @@ export default function ProductList() {
               <td>{item.color}</td>
               <td>{item.company}</td>
               <td>{item.category}</td>
+              <td>
+                {item.image ? (
+                  <img
+                    src={item.image.replace(/^public\/uploads/, "/uploads")}
+                    alt={item.name}
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  "No Image"
+                )}
+              </td>
+
               <td>
                 {" "}
                 <Link href={"productlist/" + item._id}>Edit</Link>{" "}

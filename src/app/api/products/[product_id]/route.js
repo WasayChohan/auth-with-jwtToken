@@ -1,6 +1,19 @@
 import Connection from "@/database/config";
 import Product from "@/models/product";
 import { NextResponse } from "next/server";
+import multer from "multer";
+import path from "path";
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./public/uploads"); // Store uploaded files in the 'public/uploads' directory
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Save the file with a unique name
+  },
+});
+
+const upload = multer({ storage: storage }).single("file");
 
 Connection();
 
